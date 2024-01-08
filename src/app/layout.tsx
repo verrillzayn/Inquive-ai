@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
 import TrpcProvider from "@/components/providers/trpc-providers";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 import "simplebar-react/dist/simplebar.min.css";
 
@@ -33,8 +34,10 @@ export default function RootLayout({
             fontSans.variable,
           )}
         >
-          {children}
-          <Toaster />
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Toaster />
+          </ThemeProvider>
         </body>
       </TrpcProvider>
     </html>
