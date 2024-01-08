@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "@/style/globals.css";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/marketing-page/navbar";
 import TrpcProvider from "@/components/providers/trpc-providers";
 
 export const fontSans = FontSans({
@@ -29,7 +28,6 @@ export default function RootLayout({
             fontSans.variable,
           )}
         >
-          <Navbar />
           {children}
         </body>
       </TrpcProvider>
