@@ -1,4 +1,4 @@
-import ChatWrapper from "@/components/dashboard-page/main-page/chat-wrapper";
+import ChatWrapper from "@/components/dashboard-page/main-page/chat/chat-wrapper";
 import PdfRenderer from "@/components/dashboard-page/main-page/pdf-renderer";
 
 import { db } from "@/db";
