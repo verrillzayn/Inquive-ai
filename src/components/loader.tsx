@@ -9,7 +9,7 @@ const Loader = ({ className }: { className?: string }) => {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn("lucide lucide-loader-2", className)}
