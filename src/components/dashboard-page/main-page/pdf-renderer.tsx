@@ -31,7 +31,9 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   MagnifyingGlassIcon,
+  ReloadIcon,
 } from "@radix-ui/react-icons";
+import PdfFullScreen from "@/components/dashboard-page/main-page/pdf-full-screen";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -44,8 +46,11 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
 
   const [numPages, setNumPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-
+  const [rotation, setRotation] = useState<number>(0);
   const [scale, setScale] = useState<number>(1);
+  const [renderedScale, setRenderedScale] = useState<number | null>(null);
+
+  const isLoading = renderedScale !== scale;
 
   const CustomPageValidator = z.object({
     page: z
@@ -75,11 +80,12 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   return (
     <div className="flex w-full flex-col items-center rounded-md bg-white shadow">
       <div className="flex h-14 w-full items-center justify-between border-b border-zinc-200">
-        <div className="flex items-center gap-1.5 px-4">
+        <div className="flex w-fit items-center gap-0.5 pl-4 sm:gap-1.5">
           <Button
             disabled={currentPage <= 1}
             onClick={() => {
               setCurrentPage((prev) => (prev - 1 > 1 ? prev - 1 : 1));
+              setValue("page", String(currentPage - 1));
             }}
             size="sm"
             variant="ghost"
@@ -109,11 +115,12 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
 
           <Button
             disabled={numPages === undefined || currentPage === numPages}
-            onClick={() =>
+            onClick={() => {
               setCurrentPage((prev) =>
                 prev > numPages! ? numPages! : prev + 1,
-              )
-            }
+              );
+              setValue("page", String(currentPage + 1));
+            }}
             size="sm"
             variant="ghost"
             aria-label="next page"
@@ -122,11 +129,11 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           </Button>
         </div>
 
-        <div className="space-x-2 pr-4">
+        <div className="space-x-2  pr-1 sm:pr-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                className="gap-1.5"
+                className="gap-0.5 px-2 sm:gap-1.5 sm:px-3"
                 aria-label="zoom"
                 size="sm"
                 variant="ghost"
@@ -156,6 +163,18 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Button
+            onClick={() => setRotation((prev) => prev + 90)}
+            aria-label="rotate 90 degrees"
+            variant="ghost"
+            size="sm"
+            className="px-2 sm:px-3"
+          >
+            <ReloadIcon className="h-4 w-4" />
+          </Button>
+
+          <PdfFullScreen url={url} />
         </div>
       </div>
 
@@ -171,11 +190,31 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
               file={url}
               className="max-h-full"
             >
+              {isLoading && renderedScale ? (
+                <Page
+                  width={width ? width : 1}
+                  height={height ? height : 1}
+                  pageNumber={currentPage}
+                  scale={scale}
+                  rotate={rotation}
+                  key={"@" + renderedScale}
+                />
+              ) : null}
+
               <Page
+                className={cn(isLoading ? "hidden" : "")}
                 width={width ? width : 1}
                 height={height ? height : 1}
                 pageNumber={currentPage}
                 scale={scale}
+                rotate={rotation}
+                key={"@" + scale}
+                loading={
+                  <div className="flex justify-center">
+                    <Loader className="my-24 h-6 w-6 animate-spin" />
+                  </div>
+                }
+                onRenderSuccess={() => setRenderedScale(scale)}
               />
             </Document>
           </div>
@@ -185,7 +224,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   );
 };
 
-const PdfLoading = () => (
+export const PdfLoading = () => (
   <div className="flex justify-center ">
     <Loader className="my-24 h-6 w-6 animate-spin" />
   </div>
