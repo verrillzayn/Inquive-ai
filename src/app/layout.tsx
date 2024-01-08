@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
-import "@/style/globals.css";
-import { cn } from "@/lib/utils";
+
+import { Toaster } from "@/components/ui/sonner";
 import TrpcProvider from "@/components/providers/trpc-providers";
+
+import { cn } from "@/lib/utils";
+import "@/style/globals.css";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,6 +32,7 @@ export default function RootLayout({
           )}
         >
           {children}
+          <Toaster />
         </body>
       </TrpcProvider>
     </html>
