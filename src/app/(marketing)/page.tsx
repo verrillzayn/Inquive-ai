@@ -8,26 +8,26 @@ export default function Home() {
   return (
     <>
       <MaxWidthWrapper className="mb-12 mt-28 flex flex-col items-center justify-center text-center sm:mt-40">
-        <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50">
-          <p className="text-sm font-semibold text-gray-700">
+        <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-background px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50">
+          <p className="text-sm font-semibold text-foreground">
             Inquive is now public!
           </p>
         </div>
-        <h1 className="max-w-4xl text-5xl font-semibold md:text-[3.75rem] md:leading-[4rem] lg:text-7xl lg:leading-[5rem]">
+        <h1 className="max-w-4xl text-5xl font-semibold text-primary md:text-[3.75rem] md:leading-[4rem] lg:text-7xl lg:leading-[5rem]">
           Chat with your{" "}
           <span className="items-center justify-center whitespace-nowrap rounded-md bg-primary px-4 text-primary-foreground shadow">
             documents
           </span>{" "}
           in seconds.
         </h1>
-        <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg">
+        <p className="mt-5 max-w-prose text-primary/70 sm:text-lg">
           Inquive allows you to have conversation with any PDF documents. Simply
           upload your file and start asking question right away.
         </p>
 
         <Button size="lg" className="mt-4" asChild>
           <Link href="/dashboard">
-            get started <ArrowRightIcon className="ml-2 h-5 w-5" />
+            Get started <ArrowRightIcon className="ml-2 h-5 w-5" />
           </Link>
         </Button>
       </MaxWidthWrapper>
@@ -49,7 +49,7 @@ export default function Home() {
           <div>
             <div className="lg;px-8 mx-auto max-w-6xl px-6">
               <div className="mt-16 flow-root sm:mt-24">
-                <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-600/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+                <div className="-m-2 rounded-xl bg-primary/5 p-2 ring-1 ring-inset ring-primary/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
                     src="/dashboard-preview.jpg"
                     width={1364}
@@ -80,10 +80,10 @@ export default function Home() {
       <div className="mx-auto my-32 max-w-5xl sm:mt-56">
         <div className="mb-12 px-6 lg:px-8">
           <div className="mx-auto max-w-2xl sm:text-center">
-            <h2 className="sm:texx-5xl mt-2 text-4xl font-bold text-gray-900">
+            <h2 className="sm:texx-5xl mt-2 text-4xl font-bold text-primary/90">
               Start chatting in minutes
             </h2>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-primary/60">
               Chatting to your PDF files has never been easier than with Inquive
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function Home() {
               <span className="text-xl font-semibold">
                 Sign up for an account
               </span>
-              <span className="mt-2 text-zinc-700">
+              <span className="mt-2 text-primary/70">
                 Either starting with free plan or choose our
                 <Button
                   className="pl-1 text-base font-extrabold"
@@ -114,7 +114,7 @@ export default function Home() {
               <span className="text-xl font-semibold">
                 Upload your PDF file
               </span>
-              <span className="mt-2 text-zinc-700">
+              <span className="mt-2 text-primary/70">
                 We&apos;ll process your file and make it ready for you to chat
                 with.
               </span>
@@ -126,7 +126,7 @@ export default function Home() {
               <span className="text-xl font-semibold">
                 Start asking question
               </span>
-              <span className="mt-2 text-zinc-700">
+              <span className="mt-2 text-primary/70">
                 It&apos;s that simple. Try out Inquive today - it really takes
                 less than a minute.
               </span>
@@ -136,7 +136,7 @@ export default function Home() {
 
         <div className="lg;px-8 mx-auto max-w-6xl px-6">
           <div className="mt-16 flow-root sm:mt-24">
-            <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-600/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+            <div className="-m-2 rounded-xl bg-primary/5 p-2 ring-1 ring-inset ring-primary/10 lg:-m-4 lg:rounded-2xl lg:p-4">
               <Image
                 src="/file-upload-preview.jpg"
                 width={1419}
