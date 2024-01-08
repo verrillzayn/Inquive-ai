@@ -15,10 +15,25 @@ import { Button } from "@/components/ui/button";
 import Dropzone from "react-dropzone";
 import { FileIcon, UploadIcon } from "@radix-ui/react-icons";
 import { Progress } from "@/components/ui/progress";
+import { useUploadThing } from "@/lib/uploadthing";
+import { toast } from "sonner";
+import { trpc } from "@/app/_trpc/client";
+import { useRouter } from "next/navigation";
+import Loader from "@/components/loader";
 
 const UploadDropzone = () => {
-  const [isUploading, setIsUploading] = useState<boolean>(true);
+  const router = useRouter();
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+
+  const { startUpload } = useUploadThing("pdfUploader");
+  const { mutate: startPolling } = trpc.getFile.useMutation({
+    onSuccess: (file) => {
+      router.push(`/dashboard/${file?.id}`);
+    },
+    retry: true,
+    retryDelay: 500,
+  });
 
   const startSimulatedProgress = () => {
     setUploadProgress(0);
@@ -41,8 +56,26 @@ const UploadDropzone = () => {
 
     const progressInterval = startSimulatedProgress();
 
-    clearInterval(progressInterval);
-    setUploadProgress(100);
+    const promise = startUpload(acceptedFiles);
+
+    toast.promise(promise, {
+      loading: "Uploading PDF...",
+      error: "Failed to upload PDF",
+      success: (data) => {
+        const [res] = data!;
+        const key = res.key;
+        if (!key) {
+          return toast.error(`there's no key`);
+        }
+
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+
+        startPolling({ key });
+
+        return "PDF uploaded!";
+      },
+    });
   };
 
   return (
@@ -55,7 +88,10 @@ const UploadDropzone = () => {
           {...getRootProps()}
           className="m-4 h-64 rounded-lg border border-dashed border-gray-300"
         >
-          <div className="flex h-full w-full items-center justify-center">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="flex h-full w-full items-center justify-center"
+          >
             <label
               htmlFor="dropzone-file"
               className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100"
@@ -86,8 +122,22 @@ const UploadDropzone = () => {
                     value={uploadProgress}
                     className="h-1 w-full bg-zinc-200"
                   />
+                  {uploadProgress !== 100 ? (
+                    <div className="flex items-center justify-center gap-1 pt-4 text-center text-xs text-zinc-700">
+                      <Loader className="h-3 w-3 animate-spin" />
+                      Redirecting...
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
+
+              <input
+                type="file"
+                id="dropzone-file"
+                className="hidden"
+                onClick={() => console.log("asdddads")}
+                {...getInputProps()}
+              />
             </label>
           </div>
         </div>
