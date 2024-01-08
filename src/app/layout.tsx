@@ -4,6 +4,8 @@ import { Inter as FontSans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import TrpcProvider from "@/components/providers/trpc-providers";
 
+import "simplebar-react/dist/simplebar.min.css";
+
 import { cn } from "@/lib/utils";
 import "@/style/globals.css";
 
