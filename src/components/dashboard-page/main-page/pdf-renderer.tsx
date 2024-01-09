@@ -78,8 +78,8 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   };
 
   return (
-    <div className="flex w-full flex-col items-center rounded-md bg-white shadow">
-      <div className="flex h-14 w-full items-center justify-between border-b border-zinc-200">
+    <div className="flex w-full flex-col items-center rounded-md bg-primary-foreground shadow">
+      <div className="flex h-14 w-full items-center justify-between border-b border-primary/20">
         <div className="flex w-fit items-center gap-0.5 pl-4 sm:gap-1.5">
           <Button
             disabled={currentPage <= 1}
@@ -107,7 +107,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
                 }
               }}
             />
-            <p className="space-x-1 text-sm text-zinc-700">
+            <p className="space-x-1 text-sm text-primary">
               <span>/</span>
               <span>{numPages ?? "-"}</span>
             </p>
