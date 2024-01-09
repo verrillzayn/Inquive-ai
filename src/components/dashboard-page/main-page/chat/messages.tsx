@@ -6,13 +6,21 @@ import { trpc } from "@/app/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/inifinite-query";
 
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
+
 import Message from "@/components/dashboard-page/main-page/chat/message";
+
+import { useContext, useEffect, useRef } from "react";
+import { MessageContext } from "@/components/providers/message-context";
+
+import { useIntersection } from "@mantine/hooks";
 
 interface IMessagesProps {
   fileId: string;
 }
 
 const Messages = ({ fileId }: IMessagesProps) => {
+  const { isLoading: isAiLoading } = useContext(MessageContext);
+
   const { data, isLoading, fetchNextPage } =
     trpc.getFileMessages.useInfiniteQuery(
       {
@@ -39,9 +47,22 @@ const Messages = ({ fileId }: IMessagesProps) => {
   const messages = data?.pages.flatMap((page) => page.messages);
 
   const combineMessages = [
-    ...(true ? [loadingMessages] : []),
+    ...(isAiLoading ? [loadingMessages] : []),
     ...(messages ?? []),
   ];
+
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+
+  const { ref, entry } = useIntersection({
+    root: lastMessageRef.current,
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage();
+    }
+  }, [entry, fetchNextPage]);
 
   return (
     <div className="scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch flex max-h-[calc(100vh-3.5rem-7rem)] flex-1 flex-col-reverse gap-4 overflow-y-auto border-primary/20 p-3">
@@ -54,6 +75,7 @@ const Messages = ({ fileId }: IMessagesProps) => {
           if (index === combineMessages.length - 1) {
             return (
               <Message
+                ref={ref}
                 key={msg.id}
                 isNextMessagesIsSamePerson={isNextMessagesIsSamePerson}
                 message={msg}
