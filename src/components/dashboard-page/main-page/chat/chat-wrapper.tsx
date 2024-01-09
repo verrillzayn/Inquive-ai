@@ -4,6 +4,7 @@ import { trpc } from "@/app/_trpc/client";
 import ChatInput from "@/components/dashboard-page/main-page/chat/chat-input";
 import Messages from "@/components/dashboard-page/main-page/chat/messages";
 import Loader from "@/components/loader";
+import { MessageContextProvider } from "@/components/providers/message-context";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
@@ -80,13 +81,15 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
     );
 
   return (
-    <div className="relative flex min-h-full flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50">
-      <div className="mb-28 flex flex-1 flex-col justify-between">
-        <Messages />
-      </div>
+    <MessageContextProvider fileId={fileId}>
+      <div className="relative flex min-h-full flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50">
+        <div className="mb-28 flex flex-1 flex-col justify-between">
+          <Messages />
+        </div>
 
-      <ChatInput />
-    </div>
+        <ChatInput />
+      </div>
+    </MessageContextProvider>
   );
 };
 
