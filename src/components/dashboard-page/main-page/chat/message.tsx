@@ -59,7 +59,7 @@ const Message = ({ isNextMessagesIsSamePerson, message }: IMessageProps) => {
           ) : (
             message.text
           )}
-          {message.id !== "loading-message" ? (
+          {message.id !== "loading-messages" ? (
             <div
               className={cn("mt-2 w-full select-none text-right text-xs", {
                 "text-primary": !message.isUserMessages,
