@@ -2,31 +2,28 @@
 
 import { useState } from "react";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-import Dropzone from "react-dropzone";
-import { FileIcon, UploadIcon } from "@radix-ui/react-icons";
+import { trpc } from "@/app/_trpc/client";
+import Loader from "@/components/loader";
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
-import { toast } from "sonner";
-import { trpc } from "@/app/_trpc/client";
+import { FileIcon, UploadIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import Loader from "@/components/loader";
+import Dropzone from "react-dropzone";
+import { toast } from "sonner";
 
 const UploadDropzone = () => {
   const router = useRouter();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const { data } = trpc.authCallback.useQuery();
+  const isSubscribe = data?.dbUser?.isSubscribe;
 
-  const { startUpload } = useUploadThing("pdfUploader");
+  const { startUpload } = useUploadThing(
+    isSubscribe ? "proPlanUploader" : "freePlanUploader",
+  );
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
       router.push(`/dashboard/${file?.id}`);
@@ -103,7 +100,7 @@ const UploadDropzone = () => {
                   or Drag and drop
                 </p>
                 <p className="text-xs text-muted-foreground/70">
-                  PDF (up to 4MB)
+                  PDF (up to {isSubscribe ? "16" : "4"}MB)
                 </p>
               </div>
 
