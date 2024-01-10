@@ -53,6 +53,7 @@ export function constructMetadata({
           url: image,
         },
       ],
+      url: "https://inquive.vercel.app",
     },
     twitter: {
       card: "summary_large_image",
