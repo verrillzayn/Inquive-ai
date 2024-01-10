@@ -3,11 +3,11 @@ import UserAccountAvatar from "@/components/marketing-page/user-acc-avatar";
 import MaxWidthWrapper from "@/components/max-widht-wrapper";
 import ThemeToogle from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import {
-  LoginLink,
   RegisterLink,
-  getKindeServerSession,
-} from "@kinde-oss/kinde-auth-nextjs/server";
+  LoginLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 

@@ -1,6 +1,4 @@
-"use client";
-
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { ExitIcon } from "@radix-ui/react-icons";
 
 const LogOutButton = () => {

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { cn } from "@/lib/utils";
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { ExitIcon, PersonIcon, RocketIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import Link from "next/link";
