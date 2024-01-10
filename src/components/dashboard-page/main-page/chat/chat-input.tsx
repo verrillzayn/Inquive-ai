@@ -28,7 +28,6 @@ const ChatInput = ({ isDisable }: ChatInputProps) => {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     addMessage();
-    console.log("msg send");
 
     textAreaRef.current?.focus();
   };

@@ -32,7 +32,7 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
             <Loader className="h-8 w-8 animate-spin" />
             <h3 className="text-xl font-semibold">Loading...</h3>
             <p className="text-sm text-zinc-500">
-              We&apos;re preparing your PDF.
+              We&apos;re preparing your conversation.
             </p>
           </div>
         </div>
