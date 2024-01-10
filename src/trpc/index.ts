@@ -31,7 +31,7 @@ export const appRouter = router({
       });
     }
 
-    return { succes: true, dbUser }; //dbUser di return biar ga bikin API baru, karna butuh data isSubscribe      (sementara)
+    return { succes: true };
   }),
 
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
