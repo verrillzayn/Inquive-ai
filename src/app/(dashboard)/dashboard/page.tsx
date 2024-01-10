@@ -17,7 +17,7 @@ const Page = async () => {
 
   if (!dbUser) redirect("/auth-callback?origin=dashboard");
 
-  return <Dashboard />;
+  return <Dashboard isSubscribe={dbUser.isSubscribe} />;
 };
 
 export default Page;

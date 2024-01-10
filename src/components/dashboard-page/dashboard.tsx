@@ -21,7 +21,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import Loader from "@/components/loader";
 
-const Dashboard = () => {
+const Dashboard = ({ isSubscribe }: { isSubscribe: boolean }) => {
   const [currentDeletingFile, setCurrentDeletingFiles] = useState<
     string | null
   >(null);
@@ -47,7 +47,7 @@ const Dashboard = () => {
       <div className="mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0">
         <h1 className="mb-3 text-5xl font-bold text-primary/90">My Files</h1>
 
-        <UploadButton />
+        <UploadButton isSubscribe={isSubscribe} />
       </div>
 
       {files && files?.length !== 0 ? (

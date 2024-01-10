@@ -14,12 +14,10 @@ import { useRouter } from "next/navigation";
 import Dropzone from "react-dropzone";
 import { toast } from "sonner";
 
-const UploadDropzone = () => {
+const UploadDropzone = ({ isSubscribe }: { isSubscribe: boolean }) => {
   const router = useRouter();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const { data } = trpc.authCallback.useQuery();
-  const isSubscribe = data?.dbUser?.isSubscribe;
 
   const { startUpload } = useUploadThing(
     isSubscribe ? "proPlanUploader" : "freePlanUploader",
@@ -134,7 +132,6 @@ const UploadDropzone = () => {
                 type="file"
                 id="dropzone-file"
                 className="hidden"
-                onClick={() => console.log("asdddads")}
                 {...getInputProps()}
               />
             </label>
@@ -145,7 +142,7 @@ const UploadDropzone = () => {
   );
 };
 
-const UploadButton = () => {
+const UploadButton = ({ isSubscribe }: { isSubscribe: boolean }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
@@ -161,7 +158,7 @@ const UploadButton = () => {
         <Button>Upload PDF</Button>
       </DialogTrigger>
       <DialogContent>
-        <UploadDropzone />
+        <UploadDropzone isSubscribe={isSubscribe} />
       </DialogContent>
     </Dialog>
   );
