@@ -11,14 +11,7 @@ const Page = async () => {
 
   const dbUser = await db.user.findFirst({
     where: {
-      OR: [
-        {
-          id: user.id,
-        },
-        {
-          email: user.email!,
-        },
-      ],
+      id: user.id,
     },
   });
 

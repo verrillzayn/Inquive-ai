@@ -17,14 +17,7 @@ export const appRouter = router({
 
     const dbUser = await db.user.findFirst({
       where: {
-        OR: [
-          {
-            id: user.id,
-          },
-          {
-            email: user.email,
-          },
-        ],
+        id: user.id,
       },
     });
 

@@ -13,7 +13,7 @@ datasource db {
 
 model User {
   id    String @id @unique // matches kiinde user id
-  email String @unique
+  email String // sementara, nnti solve biar satu email cmn bisa login sekali tpi multi provider
 
   File    File[]
   Message Message[]
