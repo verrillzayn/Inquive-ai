@@ -46,7 +46,8 @@ const MobileNav = ({ email, imageUrl, isAuth, name }: IMobileNavProps) => {
                   className="flex w-full py-1"
                   href={isAuth ? "/dashboard" : "sign-in"}
                 >
-                  Get started <ArrowRightIcon className="ml-4 mt-0.5 h-5 w-5" />
+                  {isAuth ? "Dashboard" : "Get started"}{" "}
+                  <ArrowRightIcon className="ml-4 mt-0.5 h-5 w-5" />
                 </Link>
               </li>
               <li className="flex border-b-[1.5px] py-3 font-semibold text-primary/80">
