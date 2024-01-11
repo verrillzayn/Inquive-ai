@@ -27,7 +27,7 @@ interface IMobileNavProps {
 const MobileNav = ({ email, imageUrl, isAuth, name }: IMobileNavProps) => {
   return (
     <>
-      <div className="ml-72 pt-[1px] sm:hidden">
+      <div className="ml-52 pt-[1px] sm:hidden">
         <ThemeToogle />
       </div>
 
@@ -72,34 +72,39 @@ const MobileNav = ({ email, imageUrl, isAuth, name }: IMobileNavProps) => {
             </ul>
           </div>
           <div className="border-t-[1.5px]" />
-          <div className="mt-10 text-center">
-            <Avatar className="mx-auto">
-              {imageUrl ? (
-                <div className="relative aspect-square h-full w-full">
-                  <Image
-                    fill
-                    src={imageUrl}
-                    alt="profile picture"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-              ) : (
-                <AvatarFallback>
-                  <span className="sr-only">{name}</span>
-                  <PersonIcon className="h-5 w-5 text-primary" />
-                </AvatarFallback>
+          {isAuth ? (
+            <div className="mt-10 text-center">
+              <Avatar className="mx-auto">
+                {imageUrl ? (
+                  <div className="relative aspect-square h-full w-full">
+                    <Image
+                      fill
+                      src={imageUrl}
+                      alt="profile picture"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                ) : (
+                  <AvatarFallback>
+                    <span className="sr-only">{name}</span>
+                    <PersonIcon className="h-5 w-5 text-primary" />
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              {name && (
+                <p className="mt-3 text-sm font-medium text-primary">{name}</p>
               )}
-            </Avatar>
-            {name && (
-              <p className="mt-3 text-sm font-medium text-primary">{name}</p>
-            )}
-            {email && (
-              <p className="truncate text-xs text-muted-foreground">{email}</p>
-            )}
-            <div className="mx-auto w-fit pt-2">
+              {email && (
+                <p className="truncate text-xs text-muted-foreground">
+                  {email}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="mx-auto mb-10 w-fit pt-7">
               <ThemeToogle />
             </div>
-          </div>
+          )}
         </SheetContent>
       </Sheet>
     </>
