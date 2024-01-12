@@ -51,7 +51,7 @@ export const POST = async (req: NextRequest) => {
     namespace: fileId,
   });
 
-  const results = await vectorStore.similaritySearch(message, 4); // 4 disini itu apa?
+  const results = await vectorStore.similaritySearch(message, 4); // 4 disini itu apa? , kayanya chunks
 
   const prevMessages = await db.message.findMany({
     where: {
@@ -83,20 +83,20 @@ export const POST = async (req: NextRequest) => {
         role: "user",
         content: `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
           
-    \n----------------\n
+        \n----------------\n
     
-    PREVIOUS CONVERSATION:
-    ${formattedPrevMessages.map((message) => {
-      if (message.role === "user") return `User: ${message.content}\n`;
-      return `Assistant: ${message.content}\n`;
-    })}
+        PREVIOUS CONVERSATION:
+          ${formattedPrevMessages.map((message) => {
+            if (message.role === "user") return `User: ${message.content}\n`;
+            return `Assistant: ${message.content}\n`;
+          })}
     
-    \n----------------\n
+          \n----------------\n
     
-    CONTEXT:
-    ${results.map((r) => r.pageContent).join("\n\n")}
+        CONTEXT:
+          ${results.map((r) => r.pageContent).join("\n\n")}
     
-    USER INPUT: ${message}`,
+        USER INPUT: ${message}`,
       },
     ],
   });
