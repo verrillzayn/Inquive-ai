@@ -21,6 +21,8 @@ import { format } from "date-fns";
 import { useState } from "react";
 import Loader from "@/components/loader";
 
+import { deletefileUT } from "@/app/action";
+
 const Dashboard = ({ isSubscribe }: { isSubscribe: boolean }) => {
   const [currentDeletingFile, setCurrentDeletingFiles] = useState<
     string | null
@@ -89,7 +91,10 @@ const Dashboard = ({ isSubscribe }: { isSubscribe: boolean }) => {
                     Mocked
                   </div>
                   <Button
-                    onClick={() => deleteFile({ id: file.id })}
+                    onClick={() => {
+                      deleteFile({ id: file.id });
+                      deletefileUT(file.key);
+                    }}
                     size="sm"
                     className="w-full"
                     variant="ghost"
