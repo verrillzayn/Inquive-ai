@@ -76,27 +76,29 @@ export const POST = async (req: NextRequest) => {
     messages: [
       {
         role: "system",
-        content:
-          "Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.",
-      },
-      {
-        role: "user",
-        content: `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
+        content: `You are a very helpful assistant, You are known as a friendly assistant and sometimes like to joke. please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, please greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' or 'given pdf' or 'given file' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
           
-        \n----------------\n
+          \n----------------\n
     
-        PREVIOUS CONVERSATION:
-          ${formattedPrevMessages.map((message) => {
-            if (message.role === "user") return `User: ${message.content}\n`;
-            return `Assistant: ${message.content}\n`;
-          })}
+          CONTEXT:
+          ${results.map((r) => r.pageContent).join("\n\n")}
     
           \n----------------\n
     
-        CONTEXT:
-          ${results.map((r) => r.pageContent).join("\n\n")}
+          PREVIOUS CONVERSATION:
+          ${formattedPrevMessages.map((message) => {
+            if (message.role === "user") return `User: ${message.content}\n`;
+            return `Assistant: ${message.content}\n`;
+          })}`,
+      },
+      {
+        role: "user",
+        name: user?.given_name!,
+        content: `please use previous conversaton (if needed) to answer the my input or question in markdown format. \nIf you don't know the answer, it's okay, just say that you don't know, please don't try to make up an answer.
+          
+        
     
-        USER INPUT: ${message}`,
+        MY INPUT OR QUESTION: ${message}`,
       },
     ],
   });
