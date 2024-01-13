@@ -1,57 +1,35 @@
-"use client";
-
-//  unused
-
-import { trpc } from "@/app/_trpc/client";
-
-import UploadButton from "@/components/dashboard-page/upload-button";
-
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-
+import DeleteButton from "@/components/dashboard-page/delete-buttons";
+import { db } from "@/db";
 import {
   ChatBubbleIcon,
   CrumpledPaperIcon,
   PlusIcon,
-  TrashIcon,
 } from "@radix-ui/react-icons";
-
-import Link from "next/link";
-
 import { format } from "date-fns";
+import { revalidatePath } from "next/cache";
+import Link from "next/link";
+import { UTApi } from "uploadthing/server";
 
-import { useState } from "react";
-import Loader from "@/components/loader";
+interface IFileListProps {
+  userId: string;
+}
 
-const Dashboard = ({ isSubscribe }: { isSubscribe: boolean }) => {
-  const [currentDeletingFile, setCurrentDeletingFiles] = useState<
-    string | null
-  >(null);
+const FileList = async ({ userId }: IFileListProps) => {
+  let myPromise = new Promise((myResolve) => {
+    setTimeout(function () {
+      myResolve("I love You !!");
+    }, 3000);
+  });
+  await myPromise;
 
-  const utils = trpc.useUtils();
-
-  const { data: files, isLoading } = trpc.getUserFiles.useQuery();
-
-  const { mutate: deleteFile } = trpc.deleteFile.useMutation({
-    onSuccess: () => {
-      utils.getUserFiles.invalidate();
-    },
-    onMutate({ id }) {
-      setCurrentDeletingFiles(id);
-    },
-    onSettled() {
-      setCurrentDeletingFiles(null);
+  const files = await db.file.findMany({
+    where: {
+      userId: userId,
     },
   });
 
   return (
-    <main className="mx-auto max-w-7xl px-4 md:p-10">
-      <div className="mt-8 flex items-center justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0">
-        <h1 className="mb-3 text-5xl font-bold text-primary/90">My Files</h1>
-
-        <UploadButton isSubscribe={isSubscribe} />
-      </div>
-
+    <>
       {files && files?.length !== 0 ? (
         <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-primary/20 md:grid-cols-2 lg:grid-cols-3">
           {files
@@ -90,30 +68,29 @@ const Dashboard = ({ isSubscribe }: { isSubscribe: boolean }) => {
                     <ChatBubbleIcon className="h-4 w-4" />
                     Mocked
                   </div>
-                  <Button
-                    onClick={() => {
-                      deleteFile({ id: file.id });
+                  <form
+                    action={async () => {
+                      "use server";
+                      const utapi = new UTApi();
+
+                      const promiseTRPC = db.file.delete({
+                        where: { id: file.id },
+                      });
+                      const promiseUT = utapi.deleteFiles(file.key);
+                      const [delTRPC, delUT] = await Promise.all([
+                        promiseTRPC,
+                        promiseUT,
+                      ]);
+                      revalidatePath("/dashboard");
+                      console.log("done");
                     }}
-                    size="sm"
-                    className="w-full"
-                    variant="ghost"
                   >
-                    {currentDeletingFile === file.id ? (
-                      <Loader className="h-4 w-4 animate-spin text-destructive" />
-                    ) : (
-                      <TrashIcon className="h-4 w-4 text-destructive" />
-                    )}
-                  </Button>
+                    <DeleteButton />
+                  </form>
                 </div>
               </li>
             ))}
         </ul>
-      ) : isLoading ? (
-        <div className="w-full md:mt-8 md:flex md:items-center md:justify-start">
-          <Skeleton className="mx-4 my-4 h-24 md:h-32 md:w-[25%]" />
-          <Skeleton className="mx-4 my-4 h-24 md:h-32 md:w-[25%]" />
-          <Skeleton className="mx-4 my-4 h-24 md:h-32 md:w-[25%]" />
-        </div>
       ) : (
         <div className="mt-16 flex flex-col items-center gap-2">
           <CrumpledPaperIcon className="h-8 w-8 text-zinc-800" />
@@ -123,8 +100,8 @@ const Dashboard = ({ isSubscribe }: { isSubscribe: boolean }) => {
           <p>let&apos;s upload your first PDF.</p>
         </div>
       )}
-    </main>
+    </>
   );
 };
 
-export default Dashboard;
+export default FileList;

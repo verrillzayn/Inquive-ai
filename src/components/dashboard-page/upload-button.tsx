@@ -13,6 +13,7 @@ import { FileIcon, UploadIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import Dropzone from "react-dropzone";
 import { toast } from "sonner";
+import { revalidate } from "@/app/action";
 
 const UploadDropzone = ({ isSubscribe }: { isSubscribe: boolean }) => {
   const router = useRouter();
@@ -55,8 +56,12 @@ const UploadDropzone = ({ isSubscribe }: { isSubscribe: boolean }) => {
 
     toast.promise(promise, {
       loading: "Uploading PDF...",
-      error: "Failed to upload PDF",
-      success: (data) => {
+      error: (error) => {
+        console.log(error);
+
+        return "Failed to upload PDF";
+      },
+      success: async (data) => {
         const [res] = data!;
         const key = res.key;
         if (!key) {
@@ -67,6 +72,7 @@ const UploadDropzone = ({ isSubscribe }: { isSubscribe: boolean }) => {
         setUploadProgress(100);
 
         startPolling({ key });
+        await revalidate("/dashboard");
 
         return "PDF uploaded!";
       },

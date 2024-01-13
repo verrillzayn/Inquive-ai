@@ -1,9 +1,9 @@
 "use server";
 
-import { UTApi } from "uploadthing/server";
+import { revalidatePath } from "next/cache";
 
-const utapi = new UTApi();
+export async function deletefileUT(key: string) {}
 
-export async function deletefileUT(key: string) {
-  await utapi.deleteFiles(key);
+export async function revalidate(path: string) {
+  revalidatePath(path);
 }
