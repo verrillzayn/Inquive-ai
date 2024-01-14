@@ -7,6 +7,7 @@ import { PineconeStore } from "@langchain/community/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { NextRequest } from "next/server";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
@@ -41,17 +42,25 @@ export const POST = async (req: NextRequest) => {
   // AI things
   // 1: vectorize message
 
-  const pineconeIndex = pinecone.Index("inquive");
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
+  const pineconeIndex = pinecone.Index("inquive"); // inget ini dimensinya udah rubah
+  // const embeddings = new OpenAIEmbeddings({
+  //   openAIApiKey: process.env.OPENAI_API_KEY,
+  // });
+  console.log("connected");
+  console.log("embedding...");
+  const embeddings = new HuggingFaceInferenceEmbeddings({
+    apiKey: process.env.HF_TOKEN,
+    model: "intfloat/multilingual-e5-large",
   });
-
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
     pineconeIndex,
     namespace: fileId,
   });
+  console.log("embedded");
 
+  console.log("waiting similaritySearch");
   const results = await vectorStore.similaritySearch(message, 4); // 4 disini itu apa? , kayanya chunks
+  console.log("done similaritySearch");
 
   const prevMessages = await db.message.findMany({
     where: {

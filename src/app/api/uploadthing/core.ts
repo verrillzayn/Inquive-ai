@@ -1,14 +1,8 @@
-import { pinecone } from "@/lib/pinecone";
-
 import { db } from "@/db";
 
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { OpenAIEmbeddings } from "@langchain/openai";
-import { PineconeStore } from "@langchain/community/vectorstores/pinecone";
-import { PLANS } from "@/config/subscriptions-plans";
+import { huggingFacePdfEmbedded, openAIPdfEmbedded } from "@/lib/pdfembedded";
 
 const f = createUploadthing();
 
@@ -59,6 +53,9 @@ const onUploadComplete = async ({
       uploadStatus: "PROCESSING",
     },
   });
+
+  await huggingFacePdfEmbedded({ createdFile, metadata });
+  // await openAIPdfEmbedded({ createdFile, metadata });
 
   // try {
   //   // AI things
