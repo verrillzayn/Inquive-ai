@@ -87,6 +87,7 @@ const Navbar = async () => {
                       : `${user.given_name} ${user.family_name}`
                   }
                 />
+                <span className="sr-only">Toggle user menu</span>
               </>
             )}
           </div>

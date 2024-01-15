@@ -23,13 +23,18 @@ const Page = async () => {
 
   return (
     <main className="mx-auto max-w-7xl px-4 md:p-10">
-      <div className="mt-8 flex items-center justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0">
+      <div className="mt-8 flex items-center justify-between gap-4 border-b border-muted-foreground/50 pb-5 sm:flex-row sm:items-center sm:gap-0">
         <h1 className="mb-3 text-5xl font-bold text-primary/90">My Files</h1>
 
         <UploadButton isSubscribe={dbUser.isSubscribe} />
       </div>
       <Suspense fallback={<FileListLoading />}>
-        <FileList userId={user.id} />
+        <FileList
+          userId={user.id}
+          userName={
+            `${user.given_name} ${user.family_name}` || user.given_name! || ""
+          }
+        />
       </Suspense>
     </main>
   );

@@ -8,12 +8,22 @@ import { useFormStatus } from "react-dom";
 const DeleteButton = () => {
   const { pending } = useFormStatus();
   return (
-    <Button size="sm" className="w-full" variant="ghost">
+    <Button
+      onClick={(e) => {
+        e.stopPropagation();
+
+        console.log("asd");
+      }}
+      size="sm"
+      className="flex w-full justify-start gap-3 text-sm font-normal"
+      variant="ghost"
+    >
       {pending ? (
         <Loader className="h-4 w-4 animate-spin text-destructive" />
       ) : (
         <TrashIcon className="h-4 w-4 text-destructive" />
       )}
+      Delete
     </Button>
   );
 };

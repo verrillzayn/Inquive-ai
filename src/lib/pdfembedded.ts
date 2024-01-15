@@ -109,8 +109,6 @@ export async function huggingFacePdfEmbedded({
 }: IPdfEmbeddedProps) {
   try {
     console.log("hf start");
-    console.log(process.env.HF_TOKEN);
-
     const res = await fetch(
       createdFile.url ||
         `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${createdFile.key}`,

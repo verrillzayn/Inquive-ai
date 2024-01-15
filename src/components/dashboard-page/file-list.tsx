@@ -1,8 +1,24 @@
 import DeleteButton from "@/components/dashboard-page/delete-buttons";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { db } from "@/db";
 import {
-  ChatBubbleIcon,
+  BackpackIcon,
   CrumpledPaperIcon,
+  DotsVerticalIcon,
+  FileIcon,
   PlusIcon,
 } from "@radix-ui/react-icons";
 import { format } from "date-fns";
@@ -12,15 +28,16 @@ import { UTApi } from "uploadthing/server";
 
 interface IFileListProps {
   userId: string;
+  userName: string;
 }
 
-const FileList = async ({ userId }: IFileListProps) => {
-  let myPromise = new Promise((myResolve) => {
-    setTimeout(function () {
-      myResolve("I love You !!");
-    }, 3000);
-  });
-  await myPromise;
+const FileList = async ({ userId, userName }: IFileListProps) => {
+  // let myPromise = new Promise((myResolve) => {
+  //   setTimeout(function () {
+  //     myResolve("I love You !!");
+  //   }, 3000);
+  // });
+  // await myPromise;
 
   const files = await db.file.findMany({
     where: {
@@ -31,7 +48,7 @@ const FileList = async ({ userId }: IFileListProps) => {
   return (
     <>
       {files && files?.length !== 0 ? (
-        <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-primary/20 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-8 grid w-full max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
           {files
             .sort(
               (a, b) =>
@@ -39,58 +56,78 @@ const FileList = async ({ userId }: IFileListProps) => {
                 new Date(a.createdAt).getTime(),
             )
             .map((file) => (
-              <li
+              <Card
                 key={file.id}
-                className="col-span-1 divide-y divide-primary/15 rounded-lg bg-muted/50 shadow transition hover:shadow-lg "
+                className="shadow hover:shadow-xl dark:shadow-md dark:shadow-muted dark:hover:shadow-lg dark:hover:shadow-muted"
               >
-                <Link
-                  href={`/dashboard/${file.id}`}
-                  className="flex flex-col gap-2"
-                >
-                  <div className="flex w-full items-center justify-between space-x-6 px-6 pt-6">
-                    <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
-                    <div className="flex-1 truncate">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="truncate text-lg font-medium text-primary/90">
-                          {file.name}
-                        </h3>
+                <Link href={`/dashboard/${file.id}`}>
+                  <CardHeader className="relative flex flex-row items-center gap-4">
+                    <FileIcon className="h-8 w-8" />
+                    <div className="grid max-w-[70%] gap-1">
+                      <CardTitle className="truncate font-semibold">
+                        {file.name}
+                        {/* www */}
+                      </CardTitle>
+                      <CardDescription>PDF</CardDescription>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className="absolute right-2 top-0.5"
+                          size="icon"
+                          variant="ghost"
+                        >
+                          <DotsVerticalIcon className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="center">
+                        <DropdownMenuItem className="z-50 p-0">
+                          <form
+                            action={async () => {
+                              "use server";
+                              const utapi = new UTApi();
+
+                              const promiseTRPC = db.file.delete({
+                                where: { id: file.id },
+                              });
+                              const promiseUT = utapi.deleteFiles(file.key);
+                              const [delTRPC, delUT] = await Promise.all([
+                                promiseTRPC,
+                                promiseUT,
+                              ]);
+                              revalidatePath("/dashboard");
+                              console.log("done");
+                            }}
+                            className="w-full p-0"
+                          >
+                            <DeleteButton />
+                          </form>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardHeader>
+                  <CardContent className="grid gap-2">
+                    <div className="text-sm font-semibold">{userName}</div>
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-1">
+                        <PlusIcon className="h-4 w-4" />
+                        <span className="text-gray-500 dark:text-gray-400">
+                          {format(new Date(file.createdAt), "MMM yyy")}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <BackpackIcon className="h-4 w-4" />
+                        <span className="text-gray-500 dark:text-gray-400">
+                          main
+                        </span>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
                 </Link>
-
-                <div className="mt-4 grid grid-cols-3 place-items-center gap-6 px-6 py-2 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <PlusIcon className="h-4 w-4" />
-                    {format(new Date(file.createdAt), "MMM yyy")}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ChatBubbleIcon className="h-4 w-4" />
-                    Mocked
-                  </div>
-                  <form
-                    action={async () => {
-                      "use server";
-                      const utapi = new UTApi();
-
-                      const promiseTRPC = db.file.delete({
-                        where: { id: file.id },
-                      });
-                      const promiseUT = utapi.deleteFiles(file.key);
-                      const [delTRPC, delUT] = await Promise.all([
-                        promiseTRPC,
-                        promiseUT,
-                      ]);
-                      revalidatePath("/dashboard");
-                      console.log("done");
-                    }}
-                  >
-                    <DeleteButton />
-                  </form>
-                </div>
-              </li>
+              </Card>
             ))}
-        </ul>
+        </div>
       ) : (
         <div className="mt-16 flex flex-col items-center gap-2">
           <CrumpledPaperIcon className="h-8 w-8 text-zinc-800" />
