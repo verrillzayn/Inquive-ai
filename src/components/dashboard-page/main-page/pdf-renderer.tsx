@@ -179,7 +179,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
       </div>
 
       <div className="max-h-screen w-full flex-1">
-        <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
+        <SimpleBar autoHide={true} className="max-h-[calc(100vh-10rem)]">
           <div ref={ref}>
             <Document
               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
