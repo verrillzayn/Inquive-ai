@@ -34,7 +34,7 @@ const ChatInput = ({ isDisable }: ChatInputProps) => {
 
   return (
     <div className="absolute bottom-0 left-0 w-full bg-primary-foreground">
-      <form className="lg:max-xl: mx-2 flex flex-row gap-3 md:mx-4 md:mb-6 lg:max-w-2xl xl:max-w-3xl">
+      <form className="lg:max-w-xl: mx-2 flex flex-row md:mx-4 lg:max-w-2xl xl:max-w-3xl">
         <div className="relative flex h-full flex-1 items-stretch md:flex-col">
           <div className="relative flex w-full flex-grow flex-col p-4">
             <div className="relative">
