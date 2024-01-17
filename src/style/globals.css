@@ -163,21 +163,29 @@
 
 /* textarea css */
 
-.scrollbar-w-2::-webkit-scrollbar {
+.scrollbar-w-2:hover::-webkit-scrollbar {
   width: 0.25rem;
   height: 0.25rem;
 }
+.scrollbar-w-2::-webkit-scrollbar,
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track,
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb,
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+  width: 0.25rem;
+  height: 0.25rem;
+  opacity: 0;
+}
 
-.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+.scrollbar-track-blue-lighter:hover::-webkit-scrollbar-track {
   --bg-opacity: 0.5;
   background-color: #00000015;
 }
 
-.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+.scrollbar-thumb-blue:hover::-webkit-scrollbar-thumb {
   --bg-opacity: 0.5;
   background-color: #13131374;
 }
 
-.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+.scrollbar-thumb-rounded:hover::-webkit-scrollbar-thumb {
   border-radius: 7px;
 }
