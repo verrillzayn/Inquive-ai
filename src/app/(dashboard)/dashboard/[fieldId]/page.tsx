@@ -1,3 +1,5 @@
+import type { Metadata, ResolvingMetadata } from "next";
+
 import ChatWrapper from "@/components/dashboard-page/main-page/chat/chat-wrapper";
 import PdfRenderer from "@/components/dashboard-page/main-page/pdf-renderer";
 
@@ -7,12 +9,44 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
 
 interface PageProps {
-  params: {
-    fieldId: string;
+  params: { fieldId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export async function generateStaticParams() {
+  const files = await db.file.findMany();
+  return files.map((file) => ({
+    fieldId: file.id,
+  }));
+}
+
+export async function generateMetadata(
+  { params, searchParams }: PageProps,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  // read route params
+  const { fieldId } = params;
+
+  // fetch data
+  const file = await db.file.findFirst({
+    where: {
+      id: fieldId,
+    },
+  });
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: file?.name,
+    description: file?.name,
+    openGraph: {
+      images: [...previousImages],
+    },
   };
 }
 
-const Page = async ({ params }: PageProps) => {
+const Page = async ({ params, searchParams }: PageProps) => {
   const { fieldId } = params;
 
   const { getUser } = getKindeServerSession();
