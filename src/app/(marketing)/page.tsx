@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <MaxWidthWrapper className="mb-12 mt-20 flex flex-col items-center justify-center text-center sm:mt-6">
-        <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-muted bg-background px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 dark:shadow-zinc-500 dark:hover:border-gray-600">
+        <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-muted bg-background px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 dark:shadow-zinc-500/50 dark:hover:border-gray-600/70">
           <p className="text-sm font-semibold text-foreground">
             Inquive is now public!
           </p>
@@ -45,12 +45,14 @@ export default function Home() {
                       fill
                       className="object-contain dark:hidden"
                       alt="Documents Heroes"
+                      sizes="(min-width: 1160px) 400px, (min-width: 800px) calc(7.06vw + 320px), (min-width: 640px) calc(11.43vw + 277px), (min-width: 380px) 300px, calc(80vw + 12px)"
                     />
                     <Image
                       src="/documents-dark.png"
                       fill
                       className="hidden object-contain dark:block"
                       alt="Documents Heroes"
+                      sizes="(min-width: 1160px) 400px, (min-width: 800px) calc(7.06vw + 320px), (min-width: 640px) calc(11.43vw + 277px), (min-width: 380px) 300px, calc(80vw + 12px)"
                     />
                   </div>
                   <div className="relative hidden h-[400px] w-[400px] md:block">
@@ -59,12 +61,14 @@ export default function Home() {
                       fill
                       className="object-contain dark:hidden"
                       alt="Reading Heroes"
+                      sizes="(min-width: 980px) 400px, calc(18.89vw + 219px)"
                     />
                     <Image
                       src="/reading-dark.png"
                       fill
                       className="hidden object-contain dark:block"
                       alt="Reading Heroes"
+                      sizes="(min-width: 980px) 400px, calc(18.89vw + 219px)"
                     />
                   </div>
                 </div>
