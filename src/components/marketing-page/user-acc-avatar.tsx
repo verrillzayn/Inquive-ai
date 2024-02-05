@@ -46,6 +46,7 @@ const UserAccountAvatar = ({
                   src={imageUrl}
                   alt="profile picture"
                   referrerPolicy="no-referrer"
+                  sizes="32px"
                 />
               </div>
             ) : (
