@@ -13,11 +13,12 @@ export default function ThemeToogle() {
   };
   return (
     <div className="w-12 pt-0.5">
-      <label className="my-auto" id="theme-toggle-button">
+      <label className="my-auto" htmlFor="toggle" id="theme-toggle-button">
         <input
           type="checkbox"
           className="absolute opacity-100"
           id="toggle"
+          aria-labelledby="theme-toggle-button"
           checked={theme === "dark" ? true : false}
           onChange={handleclick}
         />

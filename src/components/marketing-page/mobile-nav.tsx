@@ -32,7 +32,7 @@ const MobileNav = ({ email, imageUrl, isAuth, name }: IMobileNavProps) => {
       </div>
 
       <Sheet>
-        <SheetTrigger className="sm:hidden">
+        <SheetTrigger aria-label="menu button" className="sm:hidden">
           <HamburgerMenuIcon className="mr-3 h-5 w-5 text-primary/70" />
         </SheetTrigger>
         <SheetContent side="top" className="rounded-b-lg">
