@@ -59,7 +59,7 @@ export const POST = async (req: NextRequest) => {
   console.log("embedded");
 
   console.log("waiting similaritySearch");
-  const results = await vectorStore.similaritySearch(message, 4); // 4 disini itu apa? , kayanya chunks
+  const results = await vectorStore.similaritySearch(message, 2); // 4 disini itu apa? , kayanya chunks
   console.log("done similaritySearch");
 
   const prevMessages = await db.message.findMany({
@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
     orderBy: {
       createdAt: "asc",
     },
-    take: 10,
+    take: 5,
   });
 
   const formattedPrevMessages = prevMessages.map((msg) => ({
@@ -85,7 +85,7 @@ export const POST = async (req: NextRequest) => {
     messages: [
       {
         role: "system",
-        content: `You are a very helpful assistant, You are known as a friendly assistant and sometimes like to joke. please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, please greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' or 'given pdf' or 'given file' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
+        content: `You are a very helpful assistant, please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
           
           \n----------------\n
     
