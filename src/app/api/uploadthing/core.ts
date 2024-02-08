@@ -54,8 +54,8 @@ const onUploadComplete = async ({
     },
   });
 
-  await huggingFacePdfEmbedded({ createdFile, metadata });
-  // await openAIPdfEmbedded({ createdFile, metadata });
+  // await huggingFacePdfEmbedded({ createdFile, metadata });
+  await openAIPdfEmbedded({ createdFile, metadata });
 
   // try {
   //   // AI things

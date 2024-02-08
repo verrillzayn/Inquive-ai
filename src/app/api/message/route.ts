@@ -43,15 +43,15 @@ export const POST = async (req: NextRequest) => {
   // 1: vectorize message
 
   const pineconeIndex = pinecone.Index("inquive"); // inget ini dimensinya udah rubah
-  // const embeddings = new OpenAIEmbeddings({
-  //   openAIApiKey: process.env.OPENAI_API_KEY,
-  // });
   console.log("connected");
   console.log("embedding...");
-  const embeddings = new HuggingFaceInferenceEmbeddings({
-    apiKey: process.env.HF_TOKEN,
-    model: "intfloat/multilingual-e5-large",
+  const embeddings = new OpenAIEmbeddings({
+    openAIApiKey: process.env.OPENAI_API_KEY,
   });
+  // const embeddings = new HuggingFaceInferenceEmbeddings({
+  //   apiKey: process.env.HF_TOKEN,
+  //   model: "intfloat/multilingual-e5-large",
+  // });
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
     pineconeIndex,
     namespace: fileId,
