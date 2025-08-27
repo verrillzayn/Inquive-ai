@@ -39,6 +39,7 @@
     "@trpc/server": "^10.45.0",
     "@uploadthing/react": "^6.1.0",
     "ai": "^5.0.26",
+    "caniuse-lite": "^1.0.30001737",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.1.0",
