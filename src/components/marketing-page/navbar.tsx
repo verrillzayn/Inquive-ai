@@ -38,7 +38,7 @@ const Navbar = async () => {
           <div className="hidden items-center space-x-4 sm:flex">
             {!user ? (
               <>
-                <Link
+                {/* <Link
                   className={buttonVariants({
                     variant: "link",
                     size: "sm",
@@ -46,7 +46,7 @@ const Navbar = async () => {
                   href="/pricing"
                 >
                   Pricing
-                </Link>
+                </Link> */}
                 <LoginLink
                   className={buttonVariants({
                     variant: "link",

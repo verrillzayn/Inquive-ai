@@ -8,6 +8,7 @@ import "simplebar-react/dist/simplebar.min.css";
 
 import { cn, constructMetadata } from "@/lib/utils";
 import "@/style/globals.css";
+import { Metadata } from "next";
 
 const fontSans = FontSans({
   subsets: ["latin"],

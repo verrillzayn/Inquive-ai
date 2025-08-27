@@ -2,7 +2,8 @@ import { db } from "@/db";
 
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { huggingFacePdfEmbedded, openAIPdfEmbedded } from "@/lib/pdfembedded";
+import { geminiPdfEmbeded, openAIPdfEmbedded } from "@/lib/pdfembedded";
+// import { huggingFacePdfEmbedded } from "@/lib/pdfembedded";
 
 const f = createUploadthing();
 
@@ -55,70 +56,9 @@ const onUploadComplete = async ({
   });
 
   // await huggingFacePdfEmbedded({ createdFile, metadata });
-  await openAIPdfEmbedded({ createdFile, metadata });
+  // await openAIPdfEmbedded({ createdFile, metadata });
+  await geminiPdfEmbeded({ createdFile, metadata });
 
-  // try {
-  //   // AI things
-  //   const res = await fetch(
-  //     file.url ||
-  //       `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
-  //   );
-
-  //   const blob = await res.blob();
-
-  //   const loader = new PDFLoader(blob);
-  //   const pageLevelDocs = await loader.load();
-
-  //   const pagesAmount = pageLevelDocs.length;
-  //   const { isSubscribe } = metadata;
-  //   const isProExceeded =
-  //     pagesAmount > PLANS.find((plan) => plan.name === "Pro")!.pagesPerPdf;
-  //   const isFreeExceeded =
-  //     pagesAmount > PLANS.find((plan) => plan.name === "Free")!.pagesPerPdf;
-
-  //   if ((isSubscribe && isProExceeded) || (!isSubscribe && isFreeExceeded)) {
-  //     await db.file.update({
-  //       data: {
-  //         uploadStatus: "FAILED",
-  //       },
-  //       where: {
-  //         id: createdFile.id,
-  //       },
-  //     });
-  //   }
-
-  //   //vectorize and index entire PDF document / ubah tiap halaman pdf menjadi vector
-
-  //   const pineconeIndex = pinecone.Index("inquive");
-
-  //   const embeddings = new OpenAIEmbeddings({
-  //     openAIApiKey: process.env.OPENAI_API_KEY,
-  //   });
-
-  //   await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
-  //     pineconeIndex,
-  //     namespace: createdFile.id,
-  //   });
-
-  //   await db.file.update({
-  //     data: {
-  //       uploadStatus: "SUCCESS",
-  //     },
-  //     where: {
-  //       id: createdFile.id,
-  //     },
-  //   });
-  // } catch (error) {
-  //   await db.file.update({
-  //     data: {
-  //       uploadStatus: "FAILED",
-  //     },
-  //     where: {
-  //       id: createdFile.id,
-  //     },
-  //   });
-  //   console.log(error);
-  // }
 
   // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
   return { uploadedBy: metadata.userId };

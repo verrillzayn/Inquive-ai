@@ -5,9 +5,19 @@ import { SendMessageValidator } from "@/lib/validators/sendMessageValidator";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { PineconeStore } from "@langchain/community/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { NextRequest } from "next/server";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+// import {
+//   OpenAIStream,
+//   StreamingTextResponse,
+//   GoogleGenerativeAIStream,
+// } from "ai";
+import { streamText } from "ai";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import { TaskType } from "@google/generative-ai";
+import { google } from "@/lib/gemini";
+
+// import { gemini } from "@/lib/gemini";
 
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
@@ -42,11 +52,16 @@ export const POST = async (req: NextRequest) => {
   // AI things
   // 1: vectorize message
 
-  const pineconeIndex = pinecone.Index("inquive"); // inget ini dimensinya udah rubah
+  const pineconeIndex = pinecone.Index("gemini"); // inget ini dimensinya udah rubah
   console.log("connected");
   console.log("embedding...");
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
+  // const embeddings = new OpenAIEmbeddings({
+  //   openAIApiKey: process.env.OPENAI_API_KEY,
+  // });
+  const embeddings = new GoogleGenerativeAIEmbeddings({
+    apiKey: process.env.GEMINI_API_KEY,
+    model: "text-embedding-004",
+    taskType: TaskType.RETRIEVAL_DOCUMENT,
   });
   // const embeddings = new HuggingFaceInferenceEmbeddings({
   //   apiKey: process.env.HF_TOKEN,
@@ -78,14 +93,14 @@ export const POST = async (req: NextRequest) => {
     content: msg.text,
   }));
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    temperature: 0.5,
-    stream: true,
+  const model = google("gemini-2.5-flash");
+
+  const resStreamText = streamText({
+    model: model,
     messages: [
       {
         role: "system",
-        content: `You are a very helpful assistant, please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
+        content: `You are a very helpful assistant, please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format and please answer in bahasa indonesia if the user question in bahasa. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
           
           \n----------------\n
     
@@ -102,7 +117,6 @@ export const POST = async (req: NextRequest) => {
       },
       {
         role: "user",
-        name: user?.given_name!,
         content: `please use previous conversaton (if needed) to answer the my input or question in markdown format. \nIf you don't know the answer, it's okay, just say that you don't know, please don't try to make up an answer.
           
         
@@ -110,16 +124,11 @@ export const POST = async (req: NextRequest) => {
         MY INPUT OR QUESTION: ${message}`,
       },
     ],
-  });
-
-  // streaming response or send back response from ai to client in realtime
-  const stream = OpenAIStream(response, {
-    // pass calback fn when stream is complete
-    async onCompletion(completion) {
+    async onFinish(a) {
       // argument(completion) is respon from ai that is string
       await db.message.create({
         data: {
-          text: completion,
+          text: a.text,
           isUserMessages: false,
           fileId,
           userId,
@@ -128,5 +137,96 @@ export const POST = async (req: NextRequest) => {
     },
   });
 
-  return new StreamingTextResponse(stream);
+  // const response = await gemini.stream([
+  //     {
+  //       role: "system",
+  //       content: `You are a very helpful assistant, please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format and please answer in bahasa indonesia if the user question in bahasa. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
+
+  //         \n----------------\n
+
+  //         CONTEXT:
+  //         ${results.map((r) => r.pageContent).join("\n\n")}
+
+  //         \n----------------\n
+
+  //         PREVIOUS CONVERSATION:
+  //         ${formattedPrevMessages.map((message) => {
+  //           if (message.role === "user") return `User: ${message.content}\n`;
+  //           return `Assistant: ${message.content}\n`;
+  //         })}`,
+  //     },
+  //     {
+  //       role: "user",
+  //       name: user?.given_name!,
+  //       content: `please use previous conversaton (if needed) to answer the my input or question in markdown format. \nIf you don't know the answer, it's okay, just say that you don't know, please don't try to make up an answer.
+
+  //       MY INPUT OR QUESTION: ${message}`,
+  //     },
+  //   ])
+
+  // const response = await openai.chat.completions.create({
+  //   model: "gpt-3.5-turbo",
+  //   temperature: 0.5,
+  //   stream: true,
+  //   messages: [
+  //     {
+  //       role: "system",
+  //       content: `You are a very helpful assistant, please use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format and please answer in bahasa indonesia if the user question in bahasa. Users usually really like it when their name is mentioned, so please say their name whenever possible when answering their question. If possible, greet the user the first time you give an answer, but if you don't know their name, it's okay not to do that. The following context is data from a PDF, the user will assume he is giving you a PDF, don't deny it and just assume you received a PDF file. if the user mentions 'file' or 'pdf' most likely it will refer to the context mentioned below. So let's assume the context provided below is a PDF file
+
+  //         \n----------------\n
+
+  //         CONTEXT:
+  //         ${results.map((r) => r.pageContent).join("\n\n")}
+
+  //         \n----------------\n
+
+  //         PREVIOUS CONVERSATION:
+  //         ${formattedPrevMessages.map((message) => {
+  //           if (message.role === "user") return `User: ${message.content}\n`;
+  //           return `Assistant: ${message.content}\n`;
+  //         })}`,
+  //     },
+  //     {
+  //       role: "user",
+  //       name: user?.given_name!,
+  //       content: `please use previous conversaton (if needed) to answer the my input or question in markdown format. \nIf you don't know the answer, it's okay, just say that you don't know, please don't try to make up an answer.
+
+  //       MY INPUT OR QUESTION: ${message}`,
+  //     },
+  //   ],
+  // });
+
+  // streaming response or send back response from ai to client in realtime
+
+  // const s = GoogleGenerativeAIStream(response., {
+  //   // pass calback fn when stream is complete
+  //   async onCompletion(completion) {
+  //     // argument(completion) is respon from ai that is string
+  //     await db.message.create({
+  //       data: {
+  //         text: completion,
+  //         isUserMessages: false,
+  //         fileId,
+  //         userId,
+  //       },
+  //     });
+  //   },
+  // } )
+
+  // const stream = OpenAIStream(response, {
+  //   // pass calback fn when stream is complete
+  //   async onCompletion(completion) {
+  //     // argument(completion) is respon from ai that is string
+  //     await db.message.create({
+  //       data: {
+  //         text: completion,
+  //         isUserMessages: false,
+  //         fileId,
+  //         userId,
+  //       },
+  //     });
+  //   },
+  // });
+
+  return resStreamText.toTextStreamResponse()
 };
